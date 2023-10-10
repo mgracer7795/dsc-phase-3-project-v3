@@ -1,272 +1,40 @@
+## Analyzing Car Crash Data from The Chicago Data Portal
 
-# Phase 3 Project Description
+## Overview
 
-Congratulations! You've made it through another _intense_ module, and now you're ready to show off your newfound Machine Learning skills
+This project involves the comprehensive task of identifying a target variable from a dataset with 50 columns and then finding predictor variables that are influencing the target variable. To reach this goal, data was exported from the Chicago Data Portal and then loaded into Python. Then, by sorting through unique items of each column, it was possible to identify a strong target variable and predictor variables. These variables were plugged into an initial baseline Logistic Regression model and then adjusted based on how many of the variables were statistically signficiant. 
 
-All that remains in Phase 3 is to put your new skills to use with another large project.
+## Business Objective 
 
-In this project description, we will cover:
+The findings of this study are being presented to stakeholders at an Insurance Company based in Chicago. The problem this Insurance company is having is that they're spending extra money covering accidents where there were no injuries and the cars aren't in need of a tow truck. In an effort to save more money they'd like to gain a better understanding of what's influencing accidents with No Serious Injuries. Then they can use this information to allocate funds more efficiently. 
 
-* Project Overview
-* Deliverables
-* Grading
-* Getting Started
+## Data Understanding and Analysis
 
-## Project Overview
+The first step in this process was to go through the 50 columns of data and get a sense of the value counts to see how many unique items were in each column. Through this process the Crash Type column was a clear target variable that would be informative because it is classified as either resulting in a Non-Injury(0) or an Injury(1). At first, the Non-Injury and Injury categories were object variables so it was necessary to use a label encoder to covert the object to that numeric value of 0 or 1. With other columns as predictors of the impact on this target Injury column I felt confident that stakeholders would find this study useful in an effort to be more effficent and save money. 
 
-For this project, you will engage in the full data science process from start to finish, solving a **classification** problem using a **dataset of your choice**.
+The second step was to identify predictor variables. The predictor columns selected were based on how informative it would be to explaining the severity of an accident. Weather Condition, for example, was selected because accidents on a clear day are probably less likely to result in injuries compared to rainy or snowy/icy conditions. The other 15 predictor columns selected were Lighting Condition, Trafficway Type, First Crash Type, Device Condition, Damage, Primary Cont Cause, Posted Speed Limit, Crash Month, Crash Day, Crash Hour, Surface Condition, Street Number, Street Direction, and Beat of Occurance. There were also additional Injury variables that were added in an effort to strengthen the accuracy of the study. 
 
-### Business Problem and Data
+The third step was to balance the dataset. This was required since the number of Injured far outweighted the number with No Injury. The iloc function was used to balance the dataset and then concat to merge the datasets together for each value of 0 or 1. 
 
-It is up to you to define a stakeholder, a business problem, and you are also responsible for choosing a dataset.
+The fourth step was to do a train test split of the data once the data was balanced. 
 
-For complete details, see [Phase 3 Project - Choosing a Dataset](https://github.com/learn-co-curriculum/dsc-phase-3-choosing-a-dataset).
+The fifth step was to OneHot Encode the object variables from the train dataset so that each value of each column has a value of 0 or 1. That was then merged with a numbers dataframe for numeric variables using concat. The same was done to the test dataset, however, instead of using OneHot Enocode the transform function was used on the test dataset.
 
-### Key Points
+The sixth step was to run and fit the logistic regression model. The resulting score was around 0.50 or 50% so the initial observation is that the predictive variables are not having a signficant effect on our target variable. Then y hat train and test variables were created for a residual variable that generates the absolute value of the y hat train subtracted from the y-train. This shows the abosolute value. 
 
-#### Classification
+A hyperparameter for loop was created for logistic regression models with a c value that increased in increments of a 10th power (ie. 0.1,1,10,100,10000). The results did not show drastic increases for accuracy. The accuracy was also lower than what is considered to be ideal at around 0.45-0.46. Some of the factors that might have contributed to this result from the data is that there are several object variables or columns that have high levels of unique values making it difficult to incorporate into a train test split function. 
 
-Recall the distinction between *classification* and *regression* models:
+Cross Validation and decision trees were also used and the resulting accuracy was around 50%. This was not the most ideal outcome, however, if more predictive variables were used and NaN values were filled for those variables it could have strengthened the results. 
 
- * Classification is used when the target variable is a *category*
- * Regression is used when the target variable is a *numeric value*
 
-(Categorical data may be represented in the data as numbers, e.g. 0 and 1, but they are not truly numeric values. If you're unsure, ask yourself "is a target value of 1 _one more than_ a target value of 0"; if it is one more, that is a regression target, if not, that is a classification target.)
+## Dropped Columns
 
-You will have additional opportunities to work on regression problems in later phases, but **for this project, you must be modeling a classification problem**.
+Several columns were dropped for this study. Of the 50, 28 were used so the other 22 were dropped. A lot of these columns had signficant levels of Nan values that would weaken the reliability of the study. The columns also were not deemed as informative to what might or might not result in such as if the accident occured in a work zone or not. There were several columns with Nan values that were used.
 
-#### Findings and Recommendations
 
-In the previous two projects, the framing was primarily *descriptive* and *inferential*, meaning that you were trying to understand the distributions of variables and the relationship between them. For this project you can still use these techniques, but make sure you are also using a ***predictive*** approach.
 
-A predictive *finding* might include:
+## Predictive Findings and Recommendations
 
-* How well your model is able to predict the target
-* What features are most important to your model
+The initial and conclusive predictive findings were that the accuracy level driven by all models for this study were not making the accuracy higher than 50%. This includes the initial baseline regression model, hyperparameter models genenrated from a for loop, cross validation, and decision trees. 
 
-A predictive *recommendation* might include:
-
-* The contexts/situations where the predictions made by your model would and would not be useful for your stakeholder and business problem
-* Suggestions for how the business might modify certain input variables to achieve certain target results
-
-#### Iterative Approach to Modeling
-
-You should demonstrate an iterative approach to modeling. This means that you must build multiple models. Begin with a basic model, evaluate it, and then provide justification for and proceed to a new model. After you finish refining your models, you should provide 1-3 paragraphs in the notebook discussing your final model.
-
-With the additional techniques you have learned in Phase 3, be sure to explore:
-
-1. Model features and preprocessing approaches
-2. Different kinds of models (logistic regression, decision trees, etc.)
-3. Different model hyperparameters
-
-At minimum you must build two models:
-
-* A simple, interpretable baseline model (logistic regression or single decision tree)
-* A version of the simple model with tuned hyperparameters
-
-#### Classification Metrics
-
-**You must choose appropriate classification metrics and use them to evaluate your models.** Choosing the right classification metrics is a key data science skill, and should be informed by data exploration and the business problem itself. You must then use this metric to evaluate your model performance using both training and testing data.
-
-## Deliverables
-
-There are three deliverables for this project:
-
-* A **non-technical presentation**
-* A **Jupyter Notebook**
-* A **GitHub repository**
-
-### Non-Technical Presentation
-
-Recall that the non-technical presentation is a slide deck presenting your analysis to ***business stakeholders***, and should be presented live as well as submitted in PDF form on Canvas.
-
-We recommend that you follow this structure, although the slide titles should be specific to your project:
-
-1. Beginning
-    - Overview
-    - Business and Data Understanding
-2. Middle
-    - Modeling
-    - **Evaluation**
-3. End
-    - Recommendations
-    - Next Steps
-    - Thank you
-
-Make sure that your discussion of classification modeling is geared towards a non-technical audience! Assume that their prior knowledge of machine learning is minimal. You don't need to explain the details of your model implementations, but you should explain why classification is useful for the problem context. Make sure you translate any metrics or feature importances into their plain language implications.
-
-The graded elements for the non-technical presentation are the same as in [Phase 1](https://github.com/learn-co-curriculum/dsc-phase-1-project-v3#deliverables) and [Phase 2]((https://github.com/learn-co-curriculum/dsc-phase-2-project-v3#deliverables)).
-
-### Jupyter Notebook
-
-Recall that the Jupyter Notebook is a notebook that uses Python and Markdown to present your analysis to a ***data science audience***. You will submit the notebook in PDF format on Canvas as well as in `.ipynb` format in your GitHub repository.
-
-The graded elements for the Jupyter Notebook are:
-
-* Business Understanding
-* Data Understanding
-* Data Preparation
-* Modeling
-* **Evaluation**
-* Code Quality
-
-### GitHub Repository
-
-Recall that the GitHub repository is the cloud-hosted directory containing all of your project files as well as their version history.
-
-The requirements are the same as in [Phase 1](https://github.com/learn-co-curriculum/dsc-phase-1-project-v3#github-repository) and [Phase 2](https://github.com/learn-co-curriculum/dsc-phase-2-project-v3#github-repository), except for the required sections in the `README.md`.
-
-For this project, the `README.md` file should contain:
-
-* Overview
-* Business and Data Understanding
-  * Explain your stakeholder audience and dataset choice here
-* Modeling
-* **Evaluation**
-* Conclusion
-
-Just like in Phase 1 and 2, the `README.md` file should be the bridge between your non technical presentation and the Jupyter Notebook. It should not contain the code used to develop your analysis, but should provide a more in-depth explanation of your methodology and analysis than what is described in your presentation slides.
-
-## Grading
-
-***To pass this project, you must pass each project rubric objective.*** The project rubric objectives for Phase 3 are:
-
-1. ML Communication
-2. Data Preparation for Machine Learning
-3. Nonparametric and Ensemble Modeling
-
-### ML Communication
-
-Recall that communication is one of the key data science "soft skills". In Phase 3, we are specifically focusing on ML Communication. We define ML Communication as:
-
-> Communicate the **performance** of and **insights** generated by machine learning models to diverse audiences via writing, live presentation, and visualization
-
-High-quality ML Communication includes rationale, results, limitations, and recommendations:
-
-* **Rationale:** Explaining why you are using machine learning rather than a simpler form of data analysis
-  * What about the problem or data is suitable for this form of analysis?
-  * For a data science audience, this includes your reasoning for the changes you applied while iterating between models.
-* **Results:** Describing the classification metrics
-  * You can report multiple metrics for a single model, but make sure that indicate a reason for which metrics you are using (and don't try to use all of them at once)
-  * For a business audience, make sure you connect any metrics to real-world implications. You do not need to get into the details of how the model works.
-  * For a data science audience, you don't need to explain what a metric is, but make sure you explain why you chose that particular one.
-* **Limitations:** Identifying the limitations and/or uncertainty present in your analysis
-  * Are there certain kinds of records where model performance is worse? If you used this model in production, what kinds of problems might that cause?
-  * In general, this should be more in-depth for a data science audience and more surface-level for a business audience.
-* **Recommendations:** Interpreting the model results and limitations in the context of the business problem
-  * What should stakeholders _do_ with this information?
-
-#### Exceeds Objective
-
-Communicates the rationale, results, limitations, and specific recommendations generated by a classification model
-
-> See above for an extended explanation of these terms.
-
-#### Meets Objective (Passing Bar)
-
-Successfully communicates model metrics without any major errors
-
-> The minimum requirement is to communicate the _results_, meaning at least one overall model metric for your final model. See the Approaching Objective section for an explanation of what a "major error" means.
-
-#### Approaching Objective
-
-Communicates model metrics with at least one major error
-
-> A major error means that some aspect of your explanation is fundamentally incorrect. For example, if you report a regression metric for a classification model, that would be a major error. Another example would be if you report the model's performance on the training data, rather than the model's performance on the test data.
-
-#### Does Not Meet Objective
-
-Does not communicate model metrics
-
-> It is not sufficient just to display the `classification_report` or confusion matrix for a given model. You need to focus on one or more specific metrics that are important for your business case.
-
-### Data Preparation for Machine Learning
-
-We define this objective as:
-
-> Applying appropriate preprocessing and feature engineering steps to tabular data in preparation for predictive modeling
-
-You still to ensure that you have a strategy for dealing with missing and non-numeric data.
-
-For the Phase 3 project, make sure you also consider:
-
-* **Preventing Data Leakage:** As you prepare data for modeling, make sure that you are correctly applying data preparation techniques so that your model's performance on test data realistically represents how it would perform on unseen data. For scikit-learn transformers specifically, ***make sure that you do not fit the transformer on the test data***. Instead, fit the transformer on the training data and use it to transform both the train and test data.
-* **Scaling:** If you are using a distance-based model algorithm (e.g. kNN or logistic regression with regularization), make sure you scale your data prior to fitting the model.
-
-Feature engineering is encouraged but not required for this project.
-
-#### Exceeds Objective
-
-Goes above and beyond with data preparation, such as feature engineering or using pipelines
-
-> Relevant examples of feature engineering will depend on your choice of dataset and business problem.
-
-> Pipelines are the best-practice approach to data preparation that avoids leakage, but they can get complicated very quickly. We therefore do not recommend that you use pipelines in your initial modeling approach, but rather that you refactor to use pipelines if you have time.
-
-#### Meets Objective (Passing Bar)
-
-Successfully prepares data for modeling, using a final holdout dataset that is transformed by (but not fitted on) transformers used to prepare training data AND scaling data when appropriate
-
-> See the descriptions above for explanations of how to use transformers and scaling.
-
-#### Approaching Objective
-
-Prepares some data successfully, but has at least one major error
-
-> A major error means that some aspect of your data preparation is fundamentally incorrect. Some examples of major errors include: (1) fitting transformers on test data, (2) not performing a train-test split, (3) not scaling data that is used in a distance-based model.
-
-#### Does Not Meet Objective
-
-Does not prepare data for modeling
-
-> This includes projects where data is partially prepared, but the model is unable to run.
-
-### Nonparametric and Ensemble Modeling
-
-Your project should consider the different types of models that have been covered in the course so far and whether they are appropriate or inappropriate for the dataset and business case you are working with.
-
-Your final model can still be a linear model (e.g. logistic regression) but you should explore at least one nonparametric model (e.g. decision tree) as well and articulate why one or the other is a better approach.
-
-#### Exceeds Objective
-
-Goes above and beyond in the modeling process, such as articulating why a given model type is best suited to the problem or correctly using scikit-learn models not covered in the curriculum
-
-> Another way you might go above and beyond would be to create custom Python classes, possibly inheriting from scikit-learn classes.
-
-#### Meets Objective (Passing Bar)
-
-Uses at least two types of scikit-learn model and tunes at least one hyperparameter in a justifiable way without any major errors
-
-> See the "Iterative Approach to Modeling" section above for a more-lengthy explanation.
-
-> Once again, ideally you would include written justifications for each model iteration, but at minimum the iterations must be _justifiable_.
-
-> For an explanation of "major errors", see the description under "Approaching Objective".
-
-#### Approaching Objective
-
-Builds multiple classification models with at least one major error
-
-> A major error means that some aspect of your modeling approach is fundamentally incorrect.
-
-> Once again, the number one major error to avoid is including the target as one of your features. If you are getting metrics that are "too good to be true", make sure that you removed the target (`y`) from your data before fitting the model.
-
-> Other examples of major errors include: using a numeric target value (since this is a classification project), not starting with a baseline model (e.g. proceeding directly to a Random Forest model), or not tuning hyperparameters in a justifiable way (e.g. reducing regularization on a model that is overfitting)
-
-#### Does Not Meet Objective
-
-Does not build multiple classification models
-
-## Getting Started
-
-Please start by reviewing the contents of this project description. If you have any questions, please ask your instructor ASAP.
-
-Once you are ready to begin the project, you will need to complete the Project Proposal.
-
-Recall that more information is available in [Phase 3 Project - Choosing a Dataset](https://github.com/learn-co-curriculum/dsc-phase-3-choosing-a-dataset).
-
-To get started with project development, create a new repository on GitHub. For this project, we recommend that you do not fork the template repository, but rather that you make a new repository from scratch, starting by going to [github.com/new](https://github.com/new).
-
-## Summary
-
-This project is an opportunity to expand your data science toolkit by evaluating, choosing, and working with new datasets. Spending time up front making sure you have a good dataset for a solvable problem will help avoid the major problems that can sometimes derail data science projects. You've got this!
+One thing that is important for any data driven study is to focus on what could further strengthen the measures being tested for. Therefore, my primary recommendation to the stakeholders would be that more work is needed on the predictive variables to drive the accuracy levels higher. That would entail working with columns that have signifcant number of NAs and either filling those NAs with other values based on frequency or the mean. One problem I also found was that some object variables had too many unique values so it wasn't possible to generate a train test split because jupyter would freeze up. 
